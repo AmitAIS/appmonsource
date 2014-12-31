@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Configuration;
 using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -17,22 +15,20 @@ using Newtonsoft.Json;
 
 namespace BuildManager.Models
 {
+    //TODO :Clean up code.
     public class DocumentService
     {
         private static readonly string EndpointUrl = ConfigurationManager.AppSettings["EndPointUrl"];
         private static readonly string AuthorizationKey = ConfigurationManager.AppSettings["AuthorizationKey"];
+        private static readonly string DatabaseId = ConfigurationManager.AppSettings["DatabaseId"];
 
-        public static string GetSignature(string masterKey, string resourceId, string resourceType, string xDate = null, string date = null)
+        public static string GetSignature(string masterKey, string resourceId, string resourceType, string xDate = null,
+            string date = null)
         {
-
-
             if (string.IsNullOrEmpty(xDate) && string.IsNullOrEmpty(date))
             {
-
                 throw new ArgumentException("Either xDate or date must be provided.");
-
             }
-
 
 
             const string AuthorizationFormat = "type={0}&ver={1}&sig={2}";
@@ -42,15 +38,13 @@ namespace BuildManager.Models
             const string TokenVersion = "1.0";
 
 
-
-            var masterKeyBytes = Convert.FromBase64String(masterKey);
+            byte[] masterKeyBytes = Convert.FromBase64String(masterKey);
 
             var hmacSha256 = new HMACSHA256(masterKeyBytes);
 
-            var resourceIdInput = resourceId ?? string.Empty;
+            string resourceIdInput = resourceId ?? string.Empty;
 
-            var resourceTypeInput = resourceType ?? string.Empty;
-
+            string resourceTypeInput = resourceType ?? string.Empty;
 
 
             if (!string.IsNullOrEmpty(date))
@@ -63,39 +57,25 @@ namespace BuildManager.Models
             }
 
 
+            string payLoad = string.Format(CultureInfo.InvariantCulture,
+                "{0}\n{1}\n{2}\n{3}\n{4}\n",
+                "GET".ToLowerInvariant(),
+                resourceTypeInput.ToLowerInvariant(),
+                resourceIdInput.ToLowerInvariant(),
+                (xDate ?? string.Empty).ToLowerInvariant(),
+                date);
 
-            var payLoad = string.Format(CultureInfo.InvariantCulture,
+            byte[] hashPayLoad = hmacSha256.ComputeHash(Encoding.UTF8.GetBytes(payLoad));
 
-            "{0}\n{1}\n{2}\n{3}\n{4}\n",
-
-            "GET".ToLowerInvariant(),
-
-            resourceTypeInput.ToLowerInvariant(),
-
-            resourceIdInput.ToLowerInvariant(),
-
-            (xDate ?? string.Empty).ToLowerInvariant(),
-
-            date);
-
-            var hashPayLoad = hmacSha256.ComputeHash(Encoding.UTF8.GetBytes(payLoad));
-
-            var authorizationToken = Convert.ToBase64String(hashPayLoad);
+            string authorizationToken = Convert.ToBase64String(hashPayLoad);
 
 
-
-            return System.Web.HttpUtility.UrlEncode(string.Format(
-
-            CultureInfo.InvariantCulture,
-
-            AuthorizationFormat,
-
-            MasterToken,
-
-            TokenVersion,
-
-            authorizationToken));
-
+            return HttpUtility.UrlEncode(string.Format(
+                CultureInfo.InvariantCulture,
+                AuthorizationFormat,
+                MasterToken,
+                TokenVersion,
+                authorizationToken));
         }
 
         public static BuildResult GetBuildResult()
@@ -115,18 +95,17 @@ namespace BuildManager.Models
                     .AsEnumerable()
                     .First();
 
-            var families = client.CreateDocumentQuery(documentCollection.DocumentsLink,
+            IQueryable<dynamic> documetnObjects = client.CreateDocumentQuery(documentCollection.DocumentsLink,
                 "SELECT * " +
                 "FROM ErmsBuildsCollection f " +
                 "WHERE f.id = \"ermsBuilds\"");
             string val = string.Empty;
-            foreach (var family in families)
+            foreach (dynamic document in documetnObjects)
             {
-                val += family;
+                val += document;
             }
 
-            return (BuildResult)JsonConvert.DeserializeObject(val, typeof(BuildResult));
-
+            return (BuildResult) JsonConvert.DeserializeObject(val, typeof (BuildResult));
         }
 
         public static async Task<string> GetBuilds()
@@ -135,22 +114,22 @@ namespace BuildManager.Models
 
             try
             {
-                var username = "helloworld";
-                var password = "QwerAsdD123";
+                string username = "ermsbuildaccess";
+                string password = "QwerAsdD123";
 
 
-                using (HttpClient client = new HttpClient())
+                using (var client = new HttpClient())
                 {
                     client.DefaultRequestHeaders.Accept.Add(
-                        new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+                        new MediaTypeWithQualityHeaderValue("application/json"));
 
                     client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic",
                         Convert.ToBase64String(
-                            System.Text.ASCIIEncoding.ASCII.GetBytes(
+                            Encoding.ASCII.GetBytes(
                                 string.Format("{0}:{1}", username, password))));
 
                     using (HttpResponseMessage response = client.GetAsync(
-                                "https://ais-dcm.visualstudio.com/DefaultCollection/_apis/build/builds").Result)
+                        "https://aiserms.visualstudio.com/DefaultCollection/_apis/build/builds").Result)
                     {
                         response.EnsureSuccessStatusCode();
                         responseBody = await response.Content.ReadAsStringAsync();
@@ -164,7 +143,6 @@ namespace BuildManager.Models
                 Console.WriteLine(ex.ToString());
             }
             return responseBody;
-
         }
 
         public static async Task PushBuilds()
@@ -175,7 +153,7 @@ namespace BuildManager.Models
 
             // Check to verify a database with the id=FamilyRegistry does not exist
             Database database =
-                client.CreateDatabaseQuery().Where(db => db.Id == "aisdevops").AsEnumerable().First();
+                client.CreateDatabaseQuery().Where(db => db.Id == DatabaseId).AsEnumerable().First();
 
 
             // Check to verify a document collection with the id=FamilyCollection does not exist
@@ -195,25 +173,23 @@ namespace BuildManager.Models
                     });
             }
 
-            BuildResult account = JsonConvert.DeserializeObject<BuildResult>(await GetBuilds());
+            var account = JsonConvert.DeserializeObject<BuildResult>(await GetBuilds());
 
             account.Id = "ermsBuilds";
 
-            dynamic gameDocument =
-        client.CreateDocumentQuery<Document>(documentCollection.SelfLink).Where(
-        d => d.Id == "ermsBuilds").AsEnumerable().FirstOrDefault();
+            dynamic ermsDocument =
+                client.CreateDocumentQuery<Document>(documentCollection.SelfLink).Where(
+                    d => d.Id == "ermsBuilds").AsEnumerable().FirstOrDefault();
 
-            if (gameDocument != null)
+            if (ermsDocument != null)
             {
-                await client.ReplaceDocumentAsync(gameDocument.SelfLink, account);
+                await client.ReplaceDocumentAsync(ermsDocument.SelfLink, account);
             }
 
             else
             {
                 await client.CreateDocumentAsync(documentCollection.DocumentsLink, account);
             }
-
         }
-
     }
 }
