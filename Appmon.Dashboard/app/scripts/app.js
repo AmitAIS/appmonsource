@@ -1,4 +1,4 @@
-﻿var app = angular.module('ci', ['ui.bootstrap', 'ngRoute', 'smart-table', 'ui.chart']);
+﻿var app = angular.module('ci', ['ui.bootstrap', 'ngRoute', 'smart-table', 'angularCharts']);
 
 
 app.config(function ($routeProvider) {

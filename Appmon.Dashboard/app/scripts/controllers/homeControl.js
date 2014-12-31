@@ -43,26 +43,58 @@
         return moment(value).format("M/D/YYYY h:mm:ss A").toLocaleString();
     }
 
+    $scope.config = function (title) {
+        return {
+            title: title,
+            tooltips: true,
+            labels: false,
+            mouseover: function () { },
+            mouseout: function () { },
+            click: function () { },
+            legend: {
+                display: true,
+                position: 'right'
+            }
+        };
+    };
+
+
+
     $scope.fetchContent();
 
     function renderChart() {
-        $scope.someData = [[['failed', Enumerable.From($scope.content.value).OrderBy(function (x) {
-            return x.status;
-        }).Count(function (x) { return x.status == "failed"; })], ['success', Enumerable.From($scope.content.value).OrderBy(function (x) {
-            return x.status;
-        }).Count(function (x) { return x.status == "succeeded"; })]]];
 
-        $scope.myChartOpts = {
-            seriesDefaults: {
-                // Make this a pie chart.
-                renderer: jQuery.jqplot.PieRenderer,
-                rendererOptions: {
-                    // Put data labels on the pie slices.
-                    // By default, labels show the percentage of the slice.
-                    showDataLabels: true
-                }
-            },
-            legend: { show: true, location: 'e' }
+        $scope.totalBuildsPie = {
+            series: ['Failed', 'Succeeded'],
+            data: [{
+                x: "Failed",
+                y: [Enumerable.From($scope.content.value).Count(function (x) { return x.status == "failed"; })],
+            }, {
+                x: "Succeed",
+                y: [Enumerable.From($scope.content.value).Count(function (x) { return x.status == "succeeded"; })]
+            }]
+        };
+
+        $scope.todayBuildsPie = {
+            series: ['Failed', 'Succeeded'],
+            data: [{
+                x: "Failed",
+                y: [Enumerable.From($scope.content.value).Count(function (x) { return moment(x.finishTime).format("M/D/YYYY").toLocaleString() == moment(new Date().toLocaleString()).format("M/D/YYYY").toLocaleString() && x.status == "failed"; })],
+            }, {
+                x: "Succeed",
+                y: [Enumerable.From($scope.content.value).Count(function (x) { return moment(x.finishTime).format("M/D/YYYY").toLocaleString() == moment(new Date().toLocaleString()).format("M/D/YYYY").toLocaleString() && x.status == "succeeded"; })]
+            }]
+        };
+
+        $scope.lastWeekBuildsPie = {
+            series: ['Failed', 'Succeeded'],
+            data: [{
+                x: "Failed",
+                y: [Enumerable.From($scope.content.value).Count(function (x) { return moment(new Date().toLocaleString()).diff(moment(x.finishTime), 'days') <= 7 && x.status == "failed"; })],
+            }, {
+                x: "Succeed",
+                y: [Enumerable.From($scope.content.value).Count(function (x) { return moment(new Date().toLocaleString()).diff(moment(x.finishTime), 'days') <= 7 && x.status == "succeeded"; })]
+            }]
         };
     }
 }

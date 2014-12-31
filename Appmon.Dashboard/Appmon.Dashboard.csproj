@@ -149,6 +149,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="app\images\ajax-loader.gif" />
+    <Content Include="app\scripts\vendor\angular-charts.min.js" />
+    <Content Include="app\scripts\vendor\d3.min.js" />
     <Content Include="index.html" />
     <Content Include="app\scripts\app.js" />
     <Content Include="app\scripts\controllers\homeControl.js" />
