@@ -1,0 +1,104 @@
+.borderLess td {
+    border: none !important;
+}
+
+table.auto {
+    width: auto;
+}
+
+table.fixed {
+    table-layout: fixed;
+    width: 100%;
+}
+
+#dvLoading {
+    text-align: center;
+    margin: 0 auto;
+    margin-top: 150px;
+    padding-bottom: 30px;
+    cursor: wait;
+    background: url("../images/ajax-loader.gif") center bottom no-repeat;
+}
+.navbar, .footer {
+    color: white;
+    margin-bottom: 10px;
+    background-image: linear-gradient(to bottom, #428bca 0, #357ebd 100%);
+    background-color: #428bca;
+    border-color: #428bca;
+}
+
+.footer {
+    border-top: 1px solid;
+    border-bottom: 1px solid;
+    padding: 10px 20px;
+    margin-bottom: 0px;
+}
+
+.navbar-inverse .navbar-brand {
+color: white;
+}
+
+h2 {
+    margin: 0 0 15px 0;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+li {
+    float: left;
+    border: 1px solid #000;
+    border-bottom-width: 0;
+    margin: 3px 3px 0px 3px;
+    padding: 5px 5px 0px 5px;
+    background-color: #CCC;
+    color: #696969;
+}
+#mainView {
+    border: 1px solid black;
+	clear: both;
+	padding: 0 1em;
+    margin: 0 3px;
+}
+.active {
+    background-color: #FFF;
+    color: #000;
+}
+
+
+.tab-control {
+	list-style: none;
+	padding: 0;
+	margin: 5px 0 3px 0;
+}
+
+.tab-control li {
+	display: inline;
+	padding: 5px 20px;
+	border: 1px solid grey;
+	border-bottom: 0;
+	border-radius: 5;
+	cursor: pointer;
+}
+
+.tab-control li.selected {
+	background-color: lightblue;
+}
+
+.tab-content header {
+	display : none;
+}
+
+.tab-content {
+	border: 1px solid black;
+	width: 100%;
+	height: 100%;
+	display: none;
+    padding: 5px;
+}
+
+.tab-content.selected {
+	display: block;
+}

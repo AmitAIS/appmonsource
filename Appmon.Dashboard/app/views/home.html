@@ -1,0 +1,198 @@
+﻿<!--<tab-control id="MainTabControl" class="red">
+    <tab name="CI Builds" id="Tab1">
+        Tab 1...... 
+        <div id="container-control" style="padding: 10px;">
+            <div id="dvLoading" ng-show="isInProgress">
+                <h2 style="color: #428bca">Loading...</h2>
+            </div>
+            <div ng-if="isInProgress==false">
+                <div class="panel panel-primary" style="height: 100%; width:100%;">
+                    <div class="panel-body">
+                        <div class="row">
+
+                            <div class="col-sm-2">
+                                <p class="input-group pull-left">
+                                    <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i>From</span>
+                                    <input class="form-control" b-datepicker="{{dateOptions}}" ng-model="fromDate">
+                                </p>
+
+                            </div>
+                            <div class="col-sm-2">
+                                <p class="input-group pull-left">
+                                    <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i>To</span>
+                                    <input class="form-control" b-datepicker="{{dateOptions}}" ng-model="toDate">
+                                </p>
+                            </div>
+                            <div class="col-sm-2">
+                                <p class="input-group pull-left">
+                                    <span class="input-group-addon">Status</span>
+                                    <select class="form-control" ng-model="status">
+                                        <option value="All">All</option>
+                                        <option value="Success">Success</option>
+                                        <option value="Failed">Failed</option>
+                                        <option value="In Progress">In Progress</option>
+                                    </select>
+                                </p>
+                            </div>
+
+                        </div>
+                        <table st-table="content.value" class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th st-sort="buildNumber">Build Number</th>
+                                    <th st-sort="status">Status</th>
+                                    <th st-sort="startTime">Start time</th>
+                                    <th st-sort="finishtime">Finished time</th>
+                                    <th>Requested By</th>
+                                    <th>Log</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="row in content.value">
+                                    <td>{{row.buildNumber}}</td>
+                                    <td>{{row.status}}</td>
+                                    <td>{{formatDate(row.startTime)}}</td>
+                                    <td>{{formatDate(row.finishTime)}}</td>
+                                    <td>{{row.requests[0].requestedFor.displayName}}</td>
+                                    <td><a class="btn btn-primary" ng-href="{{row.log.downloadUrl}}">Download</a></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div ui-chart="someData" chart-options="myChartOpts"></div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </tab>
+    <tab name="SecondTab" id="Tab2" selected>
+        Tab 2 stuff
+    </tab>
+    <tab name="ThirdTab" id="Tab3">
+        <strong>Tab 3</strong>
+    </tab>
+</tab-control>
+
+<div ng-controller="homeControl">
+    <tab-control>
+        <tab ng-repeat="tab in tabs" name="{{tab.name}}" id="{{tab.id}}" selected="{{ $index == 0 }}">
+            {{tab.name}}
+        </tab>
+    </tab-control>
+</div>
+
+<script type="text/ng-template" id="tab2ContentTemplate">
+    Tab2
+</script>
+<script type="text/ng-template" id="tabControlTemplate">
+    <ul id="{{id}}" class="{{klass}} tab-control">
+        <li ng-repeat="tab in tabs" ng-class="{ selected: tab.selected }" class="tab" ng-click="selectTab(tab)">{{tab.name}}</li>
+    </ul>
+
+    <section ng-transclude></section>
+</script>
+
+<script type="text/ng-template" id="tabTemplate">
+    <article id="{{id}}" ng-class="{ selected: selected}" class="{{klass}} tab-content">
+        <header>
+            <h1>{{ name }}</h1>
+        </header>
+        <section ng-transclude></section>
+    </article>
+</script> -->
+
+<div ng-app="TabsApp">
+    <div id="tabs" ng-controller="homeControl">
+        <ul>
+            <li ng-repeat="tab in tabs"
+                ng-class="{active:isActiveTab(tab.url)}"
+                ng-click="onClickTab(tab)">{{tab.title}}</li>
+        </ul>
+        <div id="mainView">
+            <div ng-include="currentTab"></div>
+        </div>
+    </div>
+    <script type="text/ng-template" id="one.tpl.html">
+        <div id="viewOne">
+            <div id="container-control" style="padding: 10px;">
+                <!--<div id="dvLoading" ng-show="isInProgress">
+                    <h2 style="color: #428bca">Loading...</h2>
+                </div>-->
+                <div > <!--ng-if="isInProgress==false"-->
+                    <div class="panel panel-primary" style="height: 100%; width:100%;">
+                        <div class="panel-body">
+                            <div class="row">
+
+                                <div class="col-sm-2">
+                                    <p class="input-group pull-left">
+                                        <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i>From</span>
+                                        <input class="form-control" b-datepicker="{{dateOptions}}" ng-model="fromDate">
+                                    </p>
+
+                                </div>
+                                <div class="col-sm-2">
+                                    <p class="input-group pull-left">
+                                        <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i>To</span>
+                                        <input class="form-control" b-datepicker="{{dateOptions}}" ng-model="toDate">
+                                    </p>
+                                </div>
+                                <div class="col-sm-2">
+                                    <p class="input-group pull-left">
+                                        <span class="input-group-addon">Status</span>
+                                        <select class="form-control" ng-model="status">
+                                            <option value="All">All</option>
+                                            <option value="Success">Success</option>
+                                            <option value="Failed">Failed</option>
+                                            <option value="In Progress">In Progress</option>
+                                        </select>
+                                    </p>
+                                </div>
+
+                            </div>
+                            <table st-table="content.value" class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th st-sort="buildNumber">Build Number</th>
+                                        <th st-sort="status">Status</th>
+                                        <th st-sort="startTime">Start time</th>
+                                        <th st-sort="finishtime">Finished time</th>
+                                        <th>Requested By</th>
+                                        <th>Log</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="row in content.value">
+                                        <td>{{row.buildNumber}}</td>
+                                        <td>{{row.status}}</td>
+                                        <td>{{formatDate(row.startTime)}}</td>
+                                        <td>{{formatDate(row.finishTime)}}</td>
+                                        <td>{{row.requests[0].requestedFor.displayName}}</td>
+                                        <td><a class="btn btn-primary" ng-href="{{row.log.downloadUrl}}">Download</a></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <div ui-chart="someData" chart-options="myChartOpts"></div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </script>
+
+    <script type="text/ng-template" id="two.tpl.html">
+        <div id="viewTwo">
+            <h1>View Two</h1>
+            <p>Curabitur vulputate, ligula lacinia scelerisque tempor, lacus lacus ornare ante, ac egestas est urna sit amet arcu. Class aptent taciti sociosqu.</p>
+        </div>
+    </script>
+
+    <script type="text/ng-template" id="three.tpl.html">
+        <div id="viewThree">
+            <h1>View Three</h1>
+            <p>In pellentesque faucibus vestibulum. Nulla at nulla justo, eget luctus tortor. Nulla facilisi. Duis aliquet egestas purus in blandit. Curabitur vulputate, ligula lacinia scelerisque tempor, lacus lacus ornare ante, ac egestas est urna sit amet arcu. Class aptent taciti sociosqu.</p>
+        </div>
+    </script>
+</div>

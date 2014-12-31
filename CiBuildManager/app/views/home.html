@@ -1,0 +1,74 @@
+﻿<div id="container-control" style="padding: 10px;">
+    <div id="dvLoading" ng-show="isInProgress">
+        <h2 style="color: #428bca">Loading...</h2>
+    </div>
+    <div ng-if="isInProgress==false">
+
+        <div class="panel panel-primary" style="height: 100%; width:100%;">
+            <div class="panel-heading">
+                <h3 class="panel-title">CI Builds</h3>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+
+                    <div class="col-sm-2">
+                        <p class="input-group pull-left">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i>From</span>
+                            <input class="form-control" b-datepicker="{{dateOptions}}" ng-model="fromDate">
+                            <!--<span class="input-group-btn">
+                                <button class="btn btn-default" ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                            </span>-->
+                        </p>
+
+                    </div>
+                    <div class="col-sm-2">
+                        <p class="input-group pull-left">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i>To</span>
+                            <input class="form-control" b-datepicker="{{dateOptions}}" ng-model="toDate">
+                            <!--<span class="input-group-btn">
+                                <button class="btn btn-default" ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                            </span>-->
+                        </p>
+                    </div>
+                    <div class="col-sm-2">
+                        <p class="input-group pull-left">
+                            <span class="input-group-addon">Status</span>
+                            <select class="form-control" ng-model="status">
+                                <option value="All">All</option>
+                                <option value="Success">Success</option>
+                                <option value="Failed">Failed</option>
+                                <option value="In Progress">In Progress</option>
+                            </select>
+                        </p>
+                    </div>
+                  
+                </div>
+                <table st-table="content.value" class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th st-sort="buildNumber">Build Number</th>
+                            <th st-sort="status">Status</th>
+                            <th st-sort="startTime">Start time</th>
+                            <th st-sort="finishtime">Finished time</th>
+                            <th>Requested By</th>
+                            <th>Log</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="row in content.value">
+                            <td>{{row.buildNumber}}</td>
+                            <td>{{row.status}}</td>
+                            <td>{{formatDate(row.startTime)}}</td>
+                            <td>{{formatDate(row.finishTime)}}</td>
+                            <td>{{row.requests[0].requestedFor.displayName}}</td>
+                            <td><a class="btn btn-primary" ng-href="{{row.log.downloadUrl}}">Download</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div ui-chart="someData" chart-options="myChartOpts"></div>
+
+            </div>
+        </div>
+    </div>
+</div>
