@@ -86,7 +86,7 @@ namespace BuildManager.Models
 
             // Check to verify a database with the id=FamilyRegistry does not exist
             Database database =
-                client.CreateDatabaseQuery().Where(db => db.Id == "aisdevops").AsEnumerable().First();
+                client.CreateDatabaseQuery().Where(db => db.Id == DatabaseId).AsEnumerable().First();
 
             // Check to verify a document collection with the id=FamilyCollection does not exist
             DocumentCollection documentCollection =
@@ -114,8 +114,8 @@ namespace BuildManager.Models
 
             try
             {
-                string username = "ermsbuildaccess";
-                string password = "QwerAsdD123";
+                string username = "";
+                string password = "";
 
 
                 using (var client = new HttpClient())
