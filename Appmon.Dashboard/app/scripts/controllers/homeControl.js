@@ -6,7 +6,7 @@
     $scope.isInProgress = true;
 
     $scope.tabs = [{
-        title: 'CI Builds',
+        title: 'CI Build',
         url: 'one.tpl.html'
     }, {
         title: 'Two',
