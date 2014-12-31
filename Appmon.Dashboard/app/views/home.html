@@ -12,68 +12,76 @@
     <script type="text/ng-template" id="one.tpl.html">
         <div id="viewOne">
             <!--<div id="container-control" style="padding: 10px;">-->
-                <!--<div id="dvLoading" ng-show="isInProgress">
-                    <h2 style="color: #428bca">Loading...</h2>
-                </div>-->
-                <!--<div > ng-if="isInProgress==false"-->
-                    <div class="panel panel-primary" style="height: 100%; width:100%;">
-                        <div class="panel-body">
-                            <!--<div class="row">
+            <!--<div id="dvLoading" ng-show="isInProgress">
+                <h2 style="color: #428bca">Loading...</h2>
+            </div>-->
+            <!--<div > ng-if="isInProgress==false"-->
+            <div class="panel panel-primary" style="height: 100%; width:100%;">
+                <div class="panel-body">
+                    <div class="row" style="margin: 0px">
+                        <div class="col-lg-8">
 
-                                <div class="col-sm-2">
-                                    <p class="input-group pull-left">
-                                        <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i>From</span>
-                                        <input class="form-control" b-datepicker="{{dateOptions}}" ng-model="fromDate">
-                                    </p>
+                            <div class="row">
+                                <table st-table="content.value" class="table table-striped table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th st-sort="buildNumber">Build Number</th>
+                                            <th st-sort="status">Status</th>
+                                            <th st-sort="startTime">Start time</th>
+                                            <th st-sort="finishtime">Finished time</th>
+                                            <th>Requested By</th>
+                                            <th>Log</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="row in content.value" ng-class="{succeeded:'success', failed:'danger'}[row.status]">
+                                            <td>{{row.buildNumber}}</td>
+                                            <td>{{row.status}}</td>
+                                            <td>{{formatDate(row.startTime)}}</td>
+                                            <td>{{formatDate(row.finishTime)}}</td>
+                                            <td>{{row.requests[0].requestedFor.displayName}}</td>
+                                            <td><a class="btn btn-primary" ng-href="{{row.log.downloadUrl}}">Download</a></td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td colspan="6" class="text-center" style="height: 20px;">
+                                                <div st-pagination="" st-items-by-page="10" st-displayed-pages="7"></div>
+                                            </td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
 
+                            <div>
+                                <div ac-chart="'pie'"
+                                     ac-data="todayBuildsPie"
+                                     ac-config="config('Today\'s builds')"
+                                     class="chart">
                                 </div>
-                                <div class="col-sm-2">
-                                    <p class="input-group pull-left">
-                                        <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i>To</span>
-                                        <input class="form-control" b-datepicker="{{dateOptions}}" ng-model="toDate">
-                                    </p>
+                            </div>
+                            <div>
+                                <div ac-chart="'pie'"
+                                     ac-data="lastWeekBuildsPie"
+                                     ac-config="config('Lastweek builds')"
+                                     class="chart">
                                 </div>
-                                <div class="col-sm-2">
-                                    <p class="input-group pull-left">
-                                        <span class="input-group-addon">Status</span>
-                                        <select class="form-control" ng-model="status">
-                                            <option value="All">All</option>
-                                            <option value="Success">Success</option>
-                                            <option value="Failed">Failed</option>
-                                            <option value="In Progress">In Progress</option>
-                                        </select>
-                                    </p>
+                            </div>
+                            <div>
+                                <div ac-chart="'pie'"
+                                     ac-data="totalBuildsPie"
+                                     ac-config="config('All builds')"
+                                     class="chart">
                                 </div>
-
-                            </div>-->
-                            <table st-table="content.value" class="table table-striped">
-                                <thead>
-                                    <tr>
-                                        <th st-sort="buildNumber">Build Number</th>
-                                        <th st-sort="status">Status</th>
-                                        <th st-sort="startTime">Start time</th>
-                                        <th st-sort="finishtime">Finished time</th>
-                                        <th>Requested By</th>
-                                        <th>Log</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr ng-repeat="row in content.value">
-                                        <td>{{row.buildNumber}}</td>
-                                        <td>{{row.status}}</td>
-                                        <td>{{formatDate(row.startTime)}}</td>
-                                        <td>{{formatDate(row.finishTime)}}</td>
-                                        <td>{{row.requests[0].requestedFor.displayName}}</td>
-                                        <td><a class="btn btn-primary" ng-href="{{row.log.downloadUrl}}">Download</a></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-
-                            <div ui-chart="someData" chart-options="myChartOpts"></div>
-
+                            </div>
                         </div>
                     </div>
-                <!--</div>-->
+
+                    <!--</div>
+                    </div>-->
+                </div>
             </div>
         </div>
     </script>
@@ -109,19 +117,19 @@
         <div id="viewThree">
             <div class="panel panel-primary" style="height: 100%; width:100%;">
                 <div class="panel-body">
-                    <b>Latest Test Results: </b><br/>
+                    <b>Latest Test Results: </b><br />
                     {{perfMetrics}}
                 </div>
             </div>
         </div>
-</script>
+    </script>
 
     <script type="text/ng-template" id="four.tpl.html">
         <div id="viewFour">
             <div class="panel panel-primary" style="height: 100%; width:100%;">
                 <div class="panel-body">
-                    <b>Start Time : </b>{{appSummary.StartDateTime}}<br/>
-                    <b>End Time   : </b>{{appSummary.EndDateTime}}<br/>
+                    <b>Start Time : </b>{{appSummary.StartDateTime}}<br />
+                    <b>End Time   : </b>{{appSummary.EndDateTime}}<br />
                     <table st-table="appSummary.ThresholdValues" class="table table-striped">
                         <thead>
                             <tr>
