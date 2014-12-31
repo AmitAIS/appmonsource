@@ -38,6 +38,7 @@ namespace BuildManager.Controllers
         // DELETE api/builds/5
         public void Delete(int id)
         {
+            // No implemented.
         }
     }
 }
