@@ -21,7 +21,9 @@ namespace BuildManager.Models
         private static readonly string EndpointUrl = ConfigurationManager.AppSettings["EndPointUrl"];
         private static readonly string AuthorizationKey = ConfigurationManager.AppSettings["AuthorizationKey"];
         private static readonly string DatabaseId = ConfigurationManager.AppSettings["DatabaseId"];
-
+        private static readonly string ErmsUserName = ConfigurationManager.AppSettings["ErmsUserName"];
+        private static readonly string ErmsPwd = ConfigurationManager.AppSettings["ErmsPwd"];
+      
         public static string GetSignature(string masterKey, string resourceId, string resourceType, string xDate = null,
             string date = null)
         {
@@ -114,8 +116,8 @@ namespace BuildManager.Models
 
             try
             {
-                string username = "";
-                string password = "";
+                string username = ErmsUserName;
+                string password = ErmsPwd;
 
 
                 using (var client = new HttpClient())
