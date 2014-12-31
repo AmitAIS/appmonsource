@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
 
-namespace BuildManager
+namespace Appmon.Dashboard
 {
     public static class WebApiConfig
     {

@@ -1,19 +1,21 @@
 ﻿function homeControl($scope, $q, $http) {
     "use strict";
 
-    $scope.url = '/api/builds';
     $scope.content = {};
     $scope.isInProgress = true;
 
     $scope.tabs = [{
-        title: 'CI Build',
+        title: 'Build Information',
         url: 'one.tpl.html'
     }, {
-        title: 'Two',
+        title: 'Dependency Health Check',
         url: 'two.tpl.html'
     }, {
-        title: 'Three',
+        title: 'Performance and Load Testing',
         url: 'three.tpl.html'
+    }, {
+        title: 'Application Summary',
+        url: 'four.tpl.html'
     }];
 
     $scope.currentTab = 'one.tpl.html';
@@ -27,10 +29,9 @@
     }
 
     $scope.fetchContent = function () {
-        $q.all([$http.get($scope.url)]).then(function (values) {
+        $q.all([$http.get('/api/build')]).then(function (values) {
             $scope.content = values[0].data;
-            $scope.isInProgress = false;
-
+            //$scope.isInProgress = false;
             renderChart();
         });
     }
@@ -45,10 +46,22 @@
 
     $scope.fetchContent();
 
+    $q.all([$http.get('/api/healthcheck')]).then(function (values) {
+        $scope.healthcheck = values[0].data;
+    });
+
+    $q.all([$http.get('/api/appsummary')]).then(function (values) {
+        $scope.appSummary = values[0].data.results;
+    });
+
+    $q.all([$http.get('/api/performance')]).then(function (values) {
+        $scope.perfMetrics = values[0].data;
+    });
+
     function renderChart() {
-        $scope.someData = [[['failed', Enumerable.From($scope.content.value).OrderBy(function (x) {
+        $scope.someData = [[['Failure', Enumerable.From($scope.content.value).OrderBy(function (x) {
             return x.status;
-        }).Count(function (x) { return x.status == "failed"; })], ['success', Enumerable.From($scope.content.value).OrderBy(function (x) {
+        }).Count(function (x) { return x.status == "failed"; })], ['Success', Enumerable.From($scope.content.value).OrderBy(function (x) {
             return x.status;
         }).Count(function (x) { return x.status == "succeeded"; })]]];
 

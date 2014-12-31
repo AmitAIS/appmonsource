@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web;
 using Newtonsoft.Json;
 
-namespace BuildManager.Models
+namespace Appmon.Dashboard.Models
 {
 
     public class BuildResult

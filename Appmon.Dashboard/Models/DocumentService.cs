@@ -13,7 +13,7 @@ using Microsoft.Azure.Documents.Client;
 using Microsoft.Azure.Documents.Linq;
 using Newtonsoft.Json;
 
-namespace BuildManager.Models
+namespace Appmon.Dashboard.Models
 {
     //TODO :Clean up code.
     public class DocumentService
@@ -108,6 +108,35 @@ namespace BuildManager.Models
             }
 
             return (BuildResult) JsonConvert.DeserializeObject(val, typeof (BuildResult));
+        }
+
+        public static string GetResult(string collectionName)
+        {
+            // Make sure to call client.Dispose() once you've finished all DocumentDB interactions
+            // Create a new instance of the DocumentClient
+            var client = new DocumentClient(new Uri(EndpointUrl), AuthorizationKey);
+
+            // Check to verify a database with the id=FamilyRegistry does not exist
+            Database database =
+                client.CreateDatabaseQuery().Where(db => db.Id == DatabaseId).AsEnumerable().First();
+
+            // Check to verify a document collection with the id=FamilyCollection does not exist
+            DocumentCollection documentCollection =
+                client.CreateDocumentCollectionQuery(database.CollectionsLink)
+                    .Where(c => c.Id == collectionName)
+                    .AsEnumerable()
+                    .First();
+
+            var documet = client.CreateDocumentQuery(documentCollection.DocumentsLink,"select * from " + collectionName).ToArray().LastOrDefault();
+                                                    //.Select(f => f);
+
+            //string val = string.Empty;
+            //foreach (dynamic document in documetnObjects)
+            //{
+            //    val += document;
+            //}
+
+            return documet.ToString(); 
         }
 
         public static async Task<string> GetBuilds()

@@ -1,21 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using System.Web.Http;
-using BuildManager.Models;
+using Appmon.Dashboard.Models;
+using Newtonsoft.Json;
 
-namespace BuildManager.Controllers
+namespace Appmon.Dashboard.Controllers
 {
-    public class BuildsController : ApiController
+    public class BuildController : ApiController
     {
         // GET api/builds
         public BuildResult Get()
-        {
-            return DocumentService.GetBuildResult();
+        {            
+            return (BuildResult)JsonConvert.DeserializeObject(DocumentService.GetResult("ErmsBuildsCollection"), typeof(BuildResult));
         }
 
         // GET api/builds/5
