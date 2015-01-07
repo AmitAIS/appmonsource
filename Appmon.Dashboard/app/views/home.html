@@ -118,7 +118,29 @@
             <div class="panel panel-primary" style="height: 100%; width:100%;">
                 <div class="panel-body">
                     <b>Latest Test Results: </b><br />
-                    {{perfMetrics}}
+
+                    <table class="table table-striped" style="width:30%">                        
+                        <tr>
+                            <td>EndUser Average Response Time</td>  
+                            <td>{{perfMetrics.EndUserAverageResponseTime}}</td>                              
+                        </tr>
+                        <tr>
+                            <td>EndUser Call Count</td>
+                            <td>{{perfMetrics.EndUserCallCount}}</td>
+                        </tr>
+                        <tr>
+                            <td>Http Dispatcher Average Call Time</td>
+                            <td>{{perfMetrics.HttpDispatcherAverageCallTime}}</td>
+                        </tr>
+                        <tr>
+                            <td>Http Dispatcher Call Count</td>
+                            <td>{{perfMetrics.HttpDispatcherCallCount}}</td>
+                        </tr>
+                        <tr>
+                            <td>Application Average Response Time</td>
+                            <td>{{perfMetrics.ApplicationAverageResponseTime}}</td>
+                        </tr>                        
+                    </table>
                 </div>
             </div>
         </div>
